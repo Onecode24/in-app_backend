@@ -12,12 +12,18 @@ export class CategoryService {
     const category = await this.prisma.category.create({
       data: createCategoryDto
     })
-    return category;
+    return {
+      status: 201,
+      ...category
+    };
   }
 
   findAll() {
     const categories = this.prisma.category.findMany();
-    return categories;
+    return {
+      status: 200,
+      ...categories
+    };
   }
 
   findOne(id: number) {
@@ -26,7 +32,10 @@ export class CategoryService {
         id: id
       }
     })
-    return category;
+    return {
+      status: 200,
+      ...category
+    };
   }
 
   // TODO: Update this to use the Prisma service
