@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -63,14 +64,14 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
 
-  async login(email: string, password: string){
+  async login(loginUserDto: LoginUserDto){
     const user = await this.prisma.user.findUnique({
       where: {
-        email: email
+        email: loginUserDto.email
       }
     })
     if(user){
-      if(user.password == password){
+      if(user.password == loginUserDto.password){
         return {
           status: 200,  
           ...user
