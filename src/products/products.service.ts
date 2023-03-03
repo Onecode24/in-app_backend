@@ -12,6 +12,8 @@ export class ProductsService {
   ){}
 
   async create(createProductDto: CreateProductDto) {
+    createProductDto.createdAt = new Date().toString();
+    createProductDto.updatedAt = new Date().toString();
       const userExist = await this.prisma.user.findUnique({
         where: {
           id: createProductDto.userId
@@ -26,24 +28,24 @@ export class ProductsService {
           image: '',
           user: {
             // create: undefined,
-            connectOrCreate: {
-              where: {
-                id: createProductDto.userId,
-              },
-              create: undefined
-            },
+            // connectOrCreate: {
+            //   where: {
+            //     id: createProductDto.userId,
+            //   },
+            //   create: undefined
+            // },
             connect: {
               id: createProductDto.userId,
             }
           },
           category: {
             // create: undefined,
-            connectOrCreate: {
-              where: {
-                id: createProductDto.categoryId,
-              },
-              create: undefined
-            },
+            // connectOrCreate: {
+            //   where: {
+            //     id: createProductDto.categoryId,
+            //   },
+            //   create: undefined
+            // },
             connect: {
               id: createProductDto.categoryId,
             }
@@ -58,15 +60,53 @@ export class ProductsService {
           status: 201,
           ...product
         };
-  }
+      }else
+        return {
+          status: 404,
+          message: 'User not found'
+        }
 }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll(userId: number) {
+    // return `This action returns all products`;
+    const userExist = await this.prisma.user.findUnique({
+      where: {
+        id: userId
+      }});
+      if(userExist){
+        const products = await this.prisma.product.findMany({
+          where: {
+            userId: userId
+          }
+        });
+        return {
+          status: 200,
+          ...products
+        };
+      }else{
+        return {
+          status: 404,
+          message: 'User not found'
+        }
+      }
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} product`;
+    const product = this.prisma.product.findUnique({
+      where: {
+        id: id
+      }});
+      if(product){
+        return {
+          status: 200,
+          ...product
+        };
+      }else{
+        return {
+          status: 404,
+          message: 'Product not found'
+        }
+      }
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {

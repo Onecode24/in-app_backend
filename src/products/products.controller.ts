@@ -13,8 +13,8 @@ export class ProductsController {
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  findAll(@Param('userId') userId: number) {
+    return this.productsService.findAll(userId);
   }
 
   @Get(':id')

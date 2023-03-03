@@ -30,6 +30,8 @@ model Product{
   userId Int
   category Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Category{
